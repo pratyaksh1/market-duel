@@ -1,15 +1,18 @@
 import google.genai as genai
 import json
 import logging
+import time
+import re
 import config
 
 logger = logging.getLogger(__name__)
 
-MODELS_TO_TRY = [
-    "gemini-flash-latest",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-001",
-]
+# Only use gemini-flash-latest — this is Gemini 3 Flash on your project
+# Do NOT fall back to gemini-2.0-flash — it has limit:0 on this account
+MODEL = "gemini-flash-latest"
+MAX_RETRIES = 3
+RETRY_DELAYS = [10, 30, 60]  # seconds between retries on 503
+
 
 class ResearchSynthesizer:
     def __init__(self):
@@ -57,11 +60,11 @@ class ResearchSynthesizer:
         4. Use Indian numbering system (Lakhs/Crores) where appropriate.
         """
 
-        for model in MODELS_TO_TRY:
+        for attempt in range(MAX_RETRIES):
             try:
-                logger.info(f"Trying model: {model}")
+                logger.info(f"Synthesis attempt {attempt + 1}/{MAX_RETRIES} using {MODEL}...")
                 response = self.client.models.generate_content(
-                    model=model,
+                    model=MODEL,
                     contents=prompt,
                     config=genai.types.GenerateContentConfig(
                         temperature=0.2,
@@ -69,17 +72,26 @@ class ResearchSynthesizer:
                     )
                 )
                 result = json.loads(response.text)
-                logger.info(f"Gemini synthesis succeeded with {model}")
+                logger.info(f"Gemini synthesis succeeded on attempt {attempt + 1}")
                 return result
-            except Exception as e:
-                logger.warning(f"Model {model} failed: {e}")
-                continue
 
-        logger.error("All Gemini models failed for synthesis")
+            except Exception as e:
+                error_str = str(e)
+                if attempt < MAX_RETRIES - 1:
+                    wait = RETRY_DELAYS[attempt]
+                    # If API gives us a retry delay, use that instead
+                    match = re.search(r'"retryDelay":\s*"(\d+)s"', error_str)
+                    if match:
+                        wait = int(match.group(1)) + 5
+                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait}s...")
+                    time.sleep(wait)
+                else:
+                    logger.error(f"All {MAX_RETRIES} synthesis attempts failed: {e}")
+
         return {
             "company_name": raw_data.get('symbol'),
             "symbol": raw_data.get('symbol'),
-            "company_overview": "Data synthesis failed.",
+            "company_overview": "Data synthesis failed — model temporarily unavailable.",
             "current_price": "N/A",
             "key_positives": [],
             "key_risks": [],
