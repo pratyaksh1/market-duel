@@ -4,6 +4,12 @@ import config
 
 logger = logging.getLogger(__name__)
 
+MODELS_TO_TRY = [
+    "gemini-1.5-flash-latest",
+    "gemini-1.5-flash",
+    "gemini-1.0-pro",
+]
+
 class ScriptWriter:
     def __init__(self):
         if not config.GEMINI_API_KEY:
@@ -48,15 +54,21 @@ class ScriptWriter:
         - Use the provided research brief extensively.
         """
 
-        try:
-            response = self.client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=prompt,
-                config=genai.types.GenerateContentConfig(
-                    temperature=0.7
+        for model in MODELS_TO_TRY:
+            try:
+                logger.info(f"Trying model: {model}")
+                response = self.client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config=genai.types.GenerateContentConfig(
+                        temperature=0.7
+                    )
                 )
-            )
-            return response.text
-        except Exception as e:
-            logger.error(f"Gemini script writing failed: {e}")
-            return "HOST_A: Error generating script.\nHOST_B: Please check logs."
+                logger.info(f"Script generation succeeded with {model}")
+                return response.text
+            except Exception as e:
+                logger.warning(f"Model {model} failed: {e}")
+                continue
+
+        logger.error("All Gemini models failed for script writing")
+        return "HOST_A: Error generating script — all models exhausted.\nHOST_B: Please check your Gemini API quota and billing settings."

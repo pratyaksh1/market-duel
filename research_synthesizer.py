@@ -5,6 +5,13 @@ import config
 
 logger = logging.getLogger(__name__)
 
+# Try models in order until one works
+MODELS_TO_TRY = [
+    "gemini-1.5-flash-latest",
+    "gemini-1.5-flash",
+    "gemini-1.0-pro",
+]
+
 class ResearchSynthesizer:
     def __init__(self):
         if not config.GEMINI_API_KEY:
@@ -48,25 +55,32 @@ class ResearchSynthesizer:
         4. Use Indian numbering system (Lakhs/Crores) where appropriate.
         """
 
-        try:
-            response = self.client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=prompt,
-                config=genai.types.GenerateContentConfig(
-                    temperature=0.2,
-                    response_mime_type="application/json"
+        for model in MODELS_TO_TRY:
+            try:
+                logger.info(f"Trying model: {model}")
+                response = self.client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config=genai.types.GenerateContentConfig(
+                        temperature=0.2,
+                        response_mime_type="application/json"
+                    )
                 )
-            )
-            return json.loads(response.text)
-        except Exception as e:
-            logger.error(f"Gemini synthesis failed: {e}")
-            return {
-                "company_name": raw_data.get('symbol'),
-                "symbol": raw_data.get('symbol'),
-                "company_overview": "Data synthesis failed.",
-                "current_price": "N/A",
-                "key_positives": [],
-                "key_risks": [],
-                "bull_thesis": "N/A",
-                "bear_thesis": "N/A"
-            }
+                result = json.loads(response.text)
+                logger.info(f"Gemini synthesis succeeded with {model}")
+                return result
+            except Exception as e:
+                logger.warning(f"Model {model} failed: {e}")
+                continue
+
+        logger.error("All Gemini models failed for synthesis")
+        return {
+            "company_name": raw_data.get('symbol'),
+            "symbol": raw_data.get('symbol'),
+            "company_overview": "Data synthesis failed — all models exhausted.",
+            "current_price": "N/A",
+            "key_positives": [],
+            "key_risks": [],
+            "bull_thesis": "N/A",
+            "bear_thesis": "N/A"
+        }
