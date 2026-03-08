@@ -5,18 +5,20 @@ import config
 
 logger = logging.getLogger(__name__)
 
-# Try models in order until one works
 MODELS_TO_TRY = [
-    "gemini-1.5-flash-latest",
-    "gemini-1.5-flash",
-    "gemini-1.0-pro",
+    "gemini-flash-latest",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-001",
 ]
 
 class ResearchSynthesizer:
     def __init__(self):
         if not config.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY is not set")
-        self.client = genai.Client(api_key=config.GEMINI_API_KEY)
+        self.client = genai.Client(
+            api_key=config.GEMINI_API_KEY,
+            http_options={"api_version": "v1beta"}
+        )
 
     def synthesize(self, raw_data):
         logger.info("Synthesizing research brief using Gemini...")
@@ -77,7 +79,7 @@ class ResearchSynthesizer:
         return {
             "company_name": raw_data.get('symbol'),
             "symbol": raw_data.get('symbol'),
-            "company_overview": "Data synthesis failed — all models exhausted.",
+            "company_overview": "Data synthesis failed.",
             "current_price": "N/A",
             "key_positives": [],
             "key_risks": [],

@@ -5,16 +5,19 @@ import config
 logger = logging.getLogger(__name__)
 
 MODELS_TO_TRY = [
-    "gemini-1.5-flash-latest",
-    "gemini-1.5-flash",
-    "gemini-1.0-pro",
+    "gemini-flash-latest",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-001",
 ]
 
 class ScriptWriter:
     def __init__(self):
         if not config.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY is not set")
-        self.client = genai.Client(api_key=config.GEMINI_API_KEY)
+        self.client = genai.Client(
+            api_key=config.GEMINI_API_KEY,
+            http_options={"api_version": "v1beta"}
+        )
 
     def write_script(self, research_brief):
         logger.info("Generating podcast script using Gemini...")
@@ -71,4 +74,4 @@ class ScriptWriter:
                 continue
 
         logger.error("All Gemini models failed for script writing")
-        return "HOST_A: Error generating script — all models exhausted.\nHOST_B: Please check your Gemini API quota and billing settings."
+        return "HOST_A: Error generating script.\nHOST_B: Please check Gemini API key and quota."
