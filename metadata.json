@@ -1,0 +1,5 @@
+{
+  "name": "Market Duel: Indian Stock Podcast Generator",
+  "description": "An automated pipeline that generates a daily 30-minute stock analysis podcast for the Indian markets using Gemini and Edge TTS.",
+  "requestFramePermissions": []
+}
