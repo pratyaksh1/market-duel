@@ -1,4 +1,4 @@
-import google.generativeai as genai
+import google.genai as genai
 import json
 import logging
 import config
@@ -9,19 +9,18 @@ class ResearchSynthesizer:
     def __init__(self):
         if not config.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY is not set")
-        genai.configure(api_key=config.GEMINI_API_KEY)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.client = genai.Client(api_key=config.GEMINI_API_KEY)
 
     def synthesize(self, raw_data):
         logger.info("Synthesizing research brief using Gemini...")
-        
+
         prompt = f"""
         You are a senior equity research analyst specializing in the Indian stock market.
         Analyze the following raw data for {raw_data['symbol']} and create a structured JSON research brief.
-        
+
         RAW DATA:
         {json.dumps(raw_data, indent=2)}
-        
+
         OUTPUT FORMAT (JSON ONLY):
         {{
             "company_name": "...",
@@ -41,18 +40,19 @@ class ResearchSynthesizer:
             "key_metrics_to_watch": "...",
             "upcoming_events": "..."
         }}
-        
+
         Rules:
         1. Return ONLY valid JSON.
         2. No markdown formatting, no backticks, no preamble.
         3. Be objective and data-driven.
         4. Use Indian numbering system (Lakhs/Crores) where appropriate.
         """
-        
+
         try:
-            response = self.model.generate_content(
-                prompt,
-                generation_config=genai.types.GenerationConfig(
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt,
+                config=genai.types.GenerateContentConfig(
                     temperature=0.2,
                     response_mime_type="application/json"
                 )
@@ -60,7 +60,6 @@ class ResearchSynthesizer:
             return json.loads(response.text)
         except Exception as e:
             logger.error(f"Gemini synthesis failed: {e}")
-            # Fallback minimal brief
             return {
                 "company_name": raw_data.get('symbol'),
                 "symbol": raw_data.get('symbol'),
