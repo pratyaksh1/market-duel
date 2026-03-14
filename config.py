@@ -17,6 +17,10 @@ ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 ELEVENLABS_HOST_A_VOICE_ID = os.getenv("ELEVENLABS_HOST_A_VOICE_ID")
 ELEVENLABS_HOST_B_VOICE_ID = os.getenv("ELEVENLABS_HOST_B_VOICE_ID")
 
+# GitHub Publishing
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_REPO = os.getenv("GITHUB_REPO")  # e.g. "pratyaksh1/market-duel"
+
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")

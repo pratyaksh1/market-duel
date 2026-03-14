@@ -13,6 +13,7 @@ from script_writer import ScriptWriter
 from tts_engine import TTSEngine
 from audio_mixer import AudioMixer
 from email_sender import EmailSender
+from podcast_publisher import PodcastPublisher
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,8 +29,6 @@ logger = logging.getLogger("MarketDuel")
 async def run_pipeline():
     logger.info("🚀 Starting Market Duel Pipeline")
     start_time = datetime.now()
-
-    # Track sources used — shown in email
     sources_used = []
 
     try:
@@ -143,11 +142,23 @@ async def run_pipeline():
         filename = f"Market_Duel_{symbol}_{datetime.now().strftime('%Y%m%d')}.mp3"
         mp3_path = mixer.mix(segment_paths, script, filename)
 
-        # 9. Email
-        sender = EmailSender()
-        sender.send_podcast(mp3_path, research_brief, sources_used)
+        # 9. Publish to GitHub Releases + update RSS feed for Spotify
+        mp3_url = ""
+        if config.GITHUB_TOKEN and config.GITHUB_REPO:
+            publisher = PodcastPublisher()
+            mp3_url = publisher.publish(mp3_path, research_brief)
+            if mp3_url:
+                sources_used.append(f"✅ Published to GitHub Releases — {mp3_url}")
+            else:
+                sources_used.append("⚠️ GitHub publish failed — check GITHUB_TOKEN secret")
+        else:
+            sources_used.append("⚠️ GitHub publish skipped — GITHUB_TOKEN/GITHUB_REPO not set")
 
-        # 10. Cleanup
+        # 10. Email (with download link, no attachment)
+        sender = EmailSender()
+        sender.send_podcast(mp3_path, research_brief, sources_used, mp3_url=mp3_url)
+
+        # 11. Cleanup
         mixer.cleanup(segment_paths)
         selector.save_history(symbol)
 

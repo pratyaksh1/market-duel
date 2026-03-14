@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # Allow workflow to create releases and push to gh-pages
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,11 +42,13 @@ jobs:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_HOST_A_VOICE_ID: ${{ secrets.ELEVENLABS_HOST_A_VOICE_ID }}
           ELEVENLABS_HOST_B_VOICE_ID: ${{ secrets.ELEVENLABS_HOST_B_VOICE_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
         run: python main.py
 
-      - name: Upload Podcast Artifact
+      - name: Upload Podcast Artifact (backup)
         uses: actions/upload-artifact@v4
         with:
           name: daily-podcast
           path: output/*.mp3
-          retention-days: 7
+          retention-days: 30
