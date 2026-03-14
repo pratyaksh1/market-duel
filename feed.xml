@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Market Duel</title>
+    <description>Daily bull vs bear debate on one Indian stock. Two AI hosts, Priya and Rahul, debate the fundamentals, valuation, and catalysts every weekday morning.</description>
+    <link>https://pratyaksh1.github.io/market-duel</link>
+    <language>en-in</language>
+    <lastBuildDate>Sat, 14 Mar 2026 11:41:02 +0000</lastBuildDate>
+    <itunes:author>Market Duel AI</itunes:author>
+    <itunes:email>jainpratyaksh01@gmail.com</itunes:email>
+    <itunes:category text="Business"/>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:image href="https://pratyaksh1.github.io/market-duel/cover.jpg"/>
+    <atom:link href="https://pratyaksh1.github.io/market-duel/feed.xml" rel="self" type="application/rss+xml"/>
+
+  <item>
+    <title>Asian Paints Limited (ASIANPAINT) — Bull vs Bear | 2026-03-14</title>
+    <description>Today&apos;s Market Duel covers Asian Paints Limited (ASIANPAINT). Bull case: Asian Paints&apos; dominant market share and superior distribution network allow it to capture demand as the real estate sector recovers. Falling input costs (crude derivatives) will likely drive double-di... Bear case: Increasing competitive intensity from new large-scale entrants in the decorative paint segment could lead to price wars, further pressuring the already slow revenue growth and compressing premium valu...</description>
+    <enclosure url="https://github.com/pratyaksh1/market-duel/releases/download/episode-asianpaint-2026-03-14/Market_Duel_ASIANPAINT_20260314.mp3" length="37931302" type="audio/mpeg"/>
+    <guid isPermaLink="false">https://github.com/pratyaksh1/market-duel/releases/download/episode-asianpaint-2026-03-14/Market_Duel_ASIANPAINT_20260314.mp3</guid>
+    <pubDate>Sat, 14 Mar 2026 11:40:55 +0000</pubDate>
+    <itunes:duration>00:39:30</itunes:duration>
+    <itunes:explicit>false</itunes:explicit>
+  </item>
+  </channel>
+</rss>
