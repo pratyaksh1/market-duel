@@ -10,7 +10,10 @@
     <language>en-in</language>
     <lastBuildDate>Sat, 14 Mar 2026 11:41:02 +0000</lastBuildDate>
     <itunes:author>Market Duel AI</itunes:author>
-    <itunes:email>jainpratyaksh01@gmail.com</itunes:email>
+    <itunes:owner>
+      <itunes:name>Market Duel AI</itunes:name>
+      <itunes:email>jainpratyaksh01@gmail.com</itunes:email>
+    </itunes:owner>
     <itunes:category text="Business"/>
     <itunes:explicit>false</itunes:explicit>
     <itunes:image href="https://pratyaksh1.github.io/market-duel/cover.jpg"/>
