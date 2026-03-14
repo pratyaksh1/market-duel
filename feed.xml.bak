@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Market Duel</title>
+    <description>Daily bull vs bear debate on one Indian stock. Two AI hosts, Priya and Rahul, debate the fundamentals, valuation, and catalysts every weekday morning.</description>
+    <link>https://pratyaksh1.github.io/market-duel/</link>
+    <language>en-in</language>
+    <lastBuildDate>Sat, 14 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <itunes:author>Market Duel AI</itunes:author>
+    <itunes:owner>
+      <itunes:name>Market Duel AI</itunes:name>
+      <itunes:email>pratyakshjain3@gmail.com</itunes:email>
+    </itunes:owner>
+    <itunes:category text="Business"/>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:image href="https://pratyaksh1.github.io/market-duel/cover.jpg"/>
+    <atom:link href="https://pratyaksh1.github.io/market-duel/feed.xml" rel="self" type="application/rss+xml"/>
+  </channel>
+</rss>
